@@ -1,2 +1,17 @@
 spring.application.name=product
 
+# Let the project modify the database
+spring.jpa.hibernate.ddl-auto=update
+
+spring.datasource.url=jdbc:mysql://localhost:PORT/DABASE_NAME
+spring.datasource.username=user_database
+spring.datasource.password=password_user_database
+
+# Show queries in the logs
+spring.jpa.show-sql=true
+
+# Code SQL with indentation
+spring.jpa.properties.hibernate.format_sql=true
+
+# ROUTE PREFIX
+apiPrefix=api

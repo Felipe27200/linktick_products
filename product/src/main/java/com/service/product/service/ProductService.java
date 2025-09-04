@@ -50,4 +50,21 @@ public class ProductService
 
         return products;
     }
+
+    public Product update(Product product, Long id)
+    {
+        Product oldProduct = this.findById(id);
+        Product fetchProduct = this.productRepository.findByName(product.getName());
+
+        if (oldProduct == null)
+            throw new NotFoundException("Product with id " + id + " not found");
+
+        if (fetchProduct != null && !fetchProduct.getId().equals(oldProduct.getId()))
+            throw new GeneralException("There is another product with the name " + product.getName());
+
+        oldProduct.setName(product.getName());
+        oldProduct.setPrice(product.getPrice());
+
+        return productRepository.save(oldProduct);
+    }
 }

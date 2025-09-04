@@ -1,5 +1,6 @@
 package com.service.product.controller;
 
+import com.service.product.dto.BasicResponse;
 import com.service.product.dto.CreateProductDTO;
 import com.service.product.entity.Product;
 import com.service.product.error_handling.exception.GeneralException;
@@ -72,6 +73,21 @@ public class ProductController
     public ResponseEntity<List<Product>> findByAll()
     {
         return  new ResponseEntity<>(this.productService.findAll(), HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<BasicResponse>  delete(@PathVariable Long id)
+    {
+        this.validateId(id);
+
+        Product product = this.productService.deleteById(id);
+
+        BasicResponse basicResponse = new BasicResponse();
+
+        basicResponse.setMessage("success");
+        basicResponse.setBody("Delete product " + product.getName() + " successfully");
+
+        return new ResponseEntity<>(basicResponse, HttpStatus.OK);
     }
 
     private void validateProduct(Product product)

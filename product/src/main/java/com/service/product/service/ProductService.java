@@ -51,6 +51,7 @@ public class ProductService
         return products;
     }
 
+    @Transactional
     public Product update(Product product, Long id)
     {
         Product oldProduct = this.findById(id);
@@ -66,5 +67,15 @@ public class ProductService
         oldProduct.setPrice(product.getPrice());
 
         return productRepository.save(oldProduct);
+    }
+
+    @Transactional
+    public Product deleteById(Long id)
+    {
+        Product product = this.findById(id);
+
+        this.productRepository.delete(product);
+
+        return product;
     }
 }

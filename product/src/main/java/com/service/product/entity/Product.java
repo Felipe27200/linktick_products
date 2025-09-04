@@ -1,7 +1,5 @@
 package com.service.product.entity;
 
-import io.katharsis.resource.annotations.JsonApiId;
-import io.katharsis.resource.annotations.JsonApiResource;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;

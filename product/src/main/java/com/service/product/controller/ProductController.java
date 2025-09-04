@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @RestController
 @RequestMapping("/${apiPrefix}/products")
@@ -47,5 +48,22 @@ public class ProductController
         Product newProduct = this.productService.save(product);
 
         return new ResponseEntity<>(newProduct, HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Product> findById(@PathVariable Long id)
+    {
+        if (id == null || id <= 0)
+            throw new GeneralException("id product can not be null");
+
+        Product product = this.productService.findById(id);
+
+        return  new ResponseEntity<>(product, HttpStatus.OK);
+    }
+
+    @GetMapping("/")
+    public ResponseEntity<List<Product>> findByAll()
+    {
+        return  new ResponseEntity<>(this.productService.findAll(), HttpStatus.OK);
     }
 }

@@ -2,6 +2,7 @@ package com.service.product.service;
 
 import com.service.product.security.AuthenticationMapper;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.AuthorityUtils;
@@ -9,10 +10,12 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class AuthenticationService {
-    private static final String AUTH_TOKEN_HEADER_NAME = "X-API-KEY";
-    private static final String AUTH_TOKEN = "5465";
+    @Value("${auth.token.header.name}")
+    private String AUTH_TOKEN_HEADER_NAME;
+    @Value("${auth.token}")
+    private String AUTH_TOKEN;
 
-    public static Authentication getAuthentication(HttpServletRequest request) {
+    public Authentication getAuthentication(HttpServletRequest request) {
         // Get the API key in the header's request
         String apiKey = request.getHeader(AUTH_TOKEN_HEADER_NAME);
 

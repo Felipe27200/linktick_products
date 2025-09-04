@@ -15,3 +15,9 @@ spring.jpa.properties.hibernate.format_sql=true
 
 # ROUTE PREFIX
 apiPrefix=api
+
+auth.token.header.name=X-API-KEY
+auth.token=5465
+
+# swagger-ui custom path
+springdoc.swagger-ui.path=/swagger-ui.html

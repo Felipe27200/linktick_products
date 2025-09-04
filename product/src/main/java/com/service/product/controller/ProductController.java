@@ -8,6 +8,8 @@ import com.service.product.service.ProductService;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -73,6 +75,22 @@ public class ProductController
     public ResponseEntity<List<Product>> findByAll()
     {
         return  new ResponseEntity<>(this.productService.findAll(), HttpStatus.OK);
+    }
+
+    @GetMapping("/list")
+    public ResponseEntity<Page<Product>> findAllProducts(Pageable pageable)
+    {
+        Page<Product> products = productService.productPagination(pageable);
+        return ResponseEntity.ok(products);
+    }
+
+    @GetMapping("/search")
+    public Page<Product> getProductsByName(
+            @RequestParam String name,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        return this.productService.findByNameStartsWith(name, page, size);
     }
 
     @DeleteMapping("/{id}")

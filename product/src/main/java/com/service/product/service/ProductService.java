@@ -6,6 +6,9 @@ import com.service.product.error_handling.exception.NotFoundException;
 import com.service.product.repository.ProductRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -49,6 +52,17 @@ public class ProductService
         List<Product> products = this.productRepository.findAll();
 
         return products;
+    }
+
+    public Page<Product> productPagination(Pageable pageable)
+    {
+        return this.productRepository.findAll(pageable);
+    }
+
+    public Page findByNameStartsWith(String name, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+
+        return this.productRepository.findByNameStartsWith(name, pageable);
     }
 
     @Transactional

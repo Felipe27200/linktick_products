@@ -44,19 +44,6 @@ public class ProductServiceTest
     }
 
     @Test
-    public void ProductService_GetAll_Page_Test()
-    {
-        Page<Product> products = Mockito.mock(Page.class);
-        Pageable pageable = PageRequest.of(0, 10);
-
-        when(productRepository.findAll(Mockito.any(Pageable.class))).thenReturn(products);
-
-        Page<Product> saveProduct = productService.productPagination(pageable);
-
-        Assertions.assertNotNull(saveProduct);
-    }
-
-    @Test
     public void ProductService_FindById_Test()
     {
         Product newProduct = new Product();

@@ -77,13 +77,6 @@ public class ProductController
         return  new ResponseEntity<>(this.productService.findAll(), HttpStatus.OK);
     }
 
-    @GetMapping("/list")
-    public ResponseEntity<Page<Product>> findAllProducts(Pageable pageable)
-    {
-        Page<Product> products = productService.productPagination(pageable);
-        return ResponseEntity.ok(products);
-    }
-
     @GetMapping("/search")
     public Page<Product> getProductsByName(
             @RequestParam String name,

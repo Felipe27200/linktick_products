@@ -13,11 +13,15 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Service
 public class ProductService
 {
+    private static final Logger log = LoggerFactory.getLogger(ProductService.class);
+
     private final ProductRepository productRepository;
 
     @Autowired
@@ -29,67 +33,80 @@ public class ProductService
     @Transactional
     public Product save(Product product)
     {
+        log.info("Attempting to save product: {}", product.getName());
+
         Product alreadyExists = productRepository.findByName(product.getName());
 
         if (alreadyExists != null && !Objects.equals(alreadyExists.getId(), product.getId()))
+        {
+            log.warn("Product with name {} already exists", product.getName());
             throw new GeneralException("Product with name " + product.getName() + " already exists");
+        }
 
-        return productRepository.save(product);
+        Product saved = productRepository.save(product);
+        log.info("Product saved successfully with id {}", saved.getId());
+
+        return saved;
     }
 
     public Product findById(Long id)
     {
-        Optional<Product> product = this.productRepository.findById(id);
+        log.debug("Searching product with id {}", id);
 
-        if (product.isEmpty())
-            throw new NotFoundException("Product with id " + id + " not found");
-
-        return product.get();
+        return productRepository.findById(id)
+                .orElseThrow(() -> {
+                    log.error("Product with id {} not found", id);
+                    return new NotFoundException("Product with id " + id + " not found");
+                });
     }
 
     public List<Product> findAll()
     {
-        List<Product> products = this.productRepository.findAll();
-
-        return products;
+        log.debug("Fetching all products");
+        return productRepository.findAll();
     }
 
-    public Page<Product> productPagination(Pageable pageable)
+    public Page<Product> findByNameStartsWith(String name, int page, int size)
     {
-        return this.productRepository.findAll(pageable);
-    }
+        log.debug("Searching products by name starting with: {}", name);
 
-    public Page findByNameStartsWith(String name, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
 
-        return this.productRepository.findByNameStartsWith(name, pageable);
+        return productRepository.findByNameStartsWith(name, pageable);
     }
 
     @Transactional
     public Product update(Product product, Long id)
     {
+        log.info("Updating product id {} with new data", id);
+
         Product oldProduct = this.findById(id);
         Product fetchProduct = this.productRepository.findByName(product.getName());
 
-        if (oldProduct == null)
-            throw new NotFoundException("Product with id " + id + " not found");
-
         if (fetchProduct != null && !fetchProduct.getId().equals(oldProduct.getId()))
+        {
+            log.warn("There is another product with the name {}", product.getName());
             throw new GeneralException("There is another product with the name " + product.getName());
+        }
 
         oldProduct.setName(product.getName());
         oldProduct.setPrice(product.getPrice());
 
-        return productRepository.save(oldProduct);
+        Product updated = productRepository.save(oldProduct);
+        log.info("Product id {} updated successfully", updated.getId());
+        return updated;
     }
 
     @Transactional
     public Product deleteById(Long id)
     {
+        log.info("Deleting product with id {}", id);
+
         Product product = this.findById(id);
+        productRepository.delete(product);
 
-        this.productRepository.delete(product);
-
+        log.info("Product with id {} deleted successfully", id);
         return product;
     }
 }
+
